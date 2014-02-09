@@ -9,17 +9,14 @@ commands:
     description: Change the current language for the user.
     usage: /lingvo <lang>
     aliases: [ling, lang]
-    permission: townygolems.towngolem
+    permission: lingvo.command
     
 permissions:
   lingvo.*:
     description: All Lingvo commands and permissions.
     children:
-      lingvo.change: true
-    default: op
-  lingvo.seelang:
-    description: Allows the use of /lingvo to see the current language.
-    default: true  
-  lingvo.change:
+      lingvo.command: true
+    default: op 
+  lingvo.command:
     description: Allows the use of /lingvo <lang> to change the language.
     default: true
