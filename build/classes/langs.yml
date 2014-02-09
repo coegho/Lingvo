@@ -1,0 +1,16 @@
+#This is an example of a langs.yml file
+#Use the language's original name to ensure that all plugins match its name
+
+languages:
+  english:
+    aliases: [en]
+    path: english.yml
+  galego:
+    aliases: [gl, galician]
+    path: galego.yml
+  español:
+    aliases: [es, spanish]
+    path: espanol.yml
+  esperanto:
+    aliases: []
+    path: esperanto.yml
