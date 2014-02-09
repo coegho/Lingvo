@@ -1,0 +1,22 @@
+name: Lingvo
+main: com.github.coegho.lingvo.Lingvo
+version: 0.1
+description: Multilanguage API for plugins
+author: coegho
+
+commands:
+  lingvo:
+    description: Change the current language for the user.
+    usage: /lingvo <lang>
+    aliases: [ling, lang]
+    permission: townygolems.towngolem
+    
+permissions:
+  lingvo.*:
+    description: All Lingvo commands and permissions.
+    children:
+      lingvo.change: true
+    default: op
+  lingvo.change:
+    description: Allows the use of /lingvo <lang> to change the language.
+    default: true
