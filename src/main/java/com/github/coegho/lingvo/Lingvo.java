@@ -6,7 +6,9 @@ import com.github.coegho.lingvo.api.ILanguageFile;
 import com.github.coegho.lingvo.api.ITranslator;
 import com.github.coegho.lingvo.api.Translator;
 import com.github.coegho.lingvo.config.GenericYAMLFile;
+import com.github.coegho.lingvo.exceptions.DefaultLanguageNotFoundException;
 import java.util.HashMap;
+import java.util.logging.Level;
 import org.bukkit.plugin.java.JavaPlugin;
 /**
  *
@@ -29,8 +31,13 @@ public class Lingvo extends JavaPlugin {
         users = new UserLangDataFile(this);
         userLangData = new UserLangData(getConfig().getString("default-language"));
         translators = new HashMap<>();
-        selfTranslator = getTranslator(this, "langs.yml", getUserLangData().getDefaultLang());
         getCommand("lingvo").setExecutor(new LingvoCommandExecutor(this));
+        try {
+            selfTranslator = getTranslator(this, "langs.yml", getUserLangData().getDefaultLang());
+        } catch (DefaultLanguageNotFoundException ex) {
+            this.getServer().getLogger().log(Level.SEVERE, ex.getMessage());
+            this.getServer().getPluginManager().disablePlugin(this);
+        }
     }
     
     /**
@@ -50,10 +57,12 @@ public class Lingvo extends JavaPlugin {
      * @param langsFilePath
      * @param defaultLang
      * @return
+     * @throws com.github.coegho.lingvo.exceptions.DefaultLanguageNotFoundException
      */
     public ITranslator getTranslator(JavaPlugin plugin,
                                     String langsFilePath,
-                                    String defaultLang) {
+                                    String defaultLang)
+            throws DefaultLanguageNotFoundException {
         if(translators.containsKey(plugin.getName())) {
             return translators.get(plugin.getName());
         }
@@ -71,11 +80,13 @@ public class Lingvo extends JavaPlugin {
      * @param defaultLang
      * @param languages
      * @return
+     * @throws com.github.coegho.lingvo.exceptions.DefaultLanguageNotFoundException
      */
     public ITranslator getTranslator(JavaPlugin plugin,
                                     String langsFilePath,
                                     String defaultLang,
-                                    HashMap<String, ILanguageFile> languages) {
+                                    HashMap<String, ILanguageFile> languages)
+            throws DefaultLanguageNotFoundException {
         if(translators.containsKey(plugin.getName())) {
             return translators.get(plugin.getName());
         }

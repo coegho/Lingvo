@@ -32,7 +32,7 @@ public class LangsYAMLFile extends GenericYAMLFile {
         
         ConfigurationSection langs = getData().getConfigurationSection("languages");
         if(langs == null) {
-            throw new LangsFileBadFormatException(langs.getName());
+            throw new LangsFileBadFormatException(this.dataFileName);
         }
         for(String key : langs.getKeys(false)) { //read the different languages
             langSection = langs.getConfigurationSection(key);
@@ -41,7 +41,7 @@ public class LangsYAMLFile extends GenericYAMLFile {
             path = langSection.getString("path");
             
             if(path == null) {
-                throw new LangsFileBadFormatException(langs.getName());
+                throw new LangsFileBadFormatException(this.dataFileName);
             }
             
             lang = new LanguageLinkNode(key, aliases, path);

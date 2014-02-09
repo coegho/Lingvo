@@ -4,8 +4,8 @@ import com.github.coegho.lingvo.Lingvo;
 import com.github.coegho.lingvo.config.LangsYAMLFile;
 import com.github.coegho.lingvo.config.LanguageLinkNode;
 import com.github.coegho.lingvo.config.LanguageYAMLFile;
+import com.github.coegho.lingvo.exceptions.DefaultLanguageNotFoundException;
 import com.github.coegho.lingvo.exceptions.LangsFileException;
-import java.io.File;
 import java.util.HashMap;
 import java.util.logging.Level;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,11 +30,13 @@ public class Translator implements ITranslator {
      * @param langsFilePath
      * @param defaultLang
      * @param lingvo
+     * @throws com.github.coegho.lingvo.exceptions.DefaultLanguageNotFoundException
      */
     public Translator(JavaPlugin plugin, 
             String langsFilePath, 
             String defaultLang, 
-            Lingvo lingvo) {
+            Lingvo lingvo)
+            throws DefaultLanguageNotFoundException {
         this.plugin = plugin;
         this.lingvo = lingvo;
         this.defaultLang = defaultLang;
@@ -43,6 +45,7 @@ public class Translator implements ITranslator {
         
         HashMap<String, String> paths;
         LangsYAMLFile langsFile;
+        LanguageYAMLFile languageFileAux;
         HashMap<String, LanguageLinkNode> languageLinkNodes;
         
         paths = new HashMap<>();
@@ -62,10 +65,10 @@ public class Translator implements ITranslator {
 
             HashMap<String, LanguageYAMLFile> path2object = new HashMap<>();
             for(String langName : paths.keySet()) {
+                //Prevent duplicates; name > alias
                 if(!path2object.containsKey(paths.get(langName))) {
                     path2object.put(paths.get(langName), new LanguageYAMLFile(plugin, paths.get(langName)));
                 }
-                languages.put(langName, path2object.get(paths.get(langName)));
             }
             
         } catch (LangsFileException ex) {
@@ -74,7 +77,16 @@ public class Translator implements ITranslator {
             //languages hashMap is empty
         }
         
-
+        //must have default language
+        if(!languages.containsKey(defaultLang)) {
+            languageFileAux = new LanguageYAMLFile(plugin, defaultLang + ".yml");
+            if(languageFileAux.getFile().exists()) {
+                languages.put(defaultLang, languageFileAux);
+            }
+            else {
+                throw new DefaultLanguageNotFoundException(defaultLang);
+            }
+        }
         
     }
     
@@ -85,17 +97,22 @@ public class Translator implements ITranslator {
      * @param defaultLang
      * @param lingvo
      * @param languages
+     * @throws com.github.coegho.lingvo.exceptions.DefaultLanguageNotFoundException
      */
     public Translator(JavaPlugin plugin, 
             String langsFilePath, 
             String defaultLang, 
             Lingvo lingvo,
-            HashMap<String, ILanguageFile> languages) {
+            HashMap<String, ILanguageFile> languages)
+            throws DefaultLanguageNotFoundException {
         this.plugin = plugin;
         this.lingvo = lingvo;
         this.defaultLang = defaultLang;
         this.customLanguageFiles = true;
         this.languages = languages;
+        if(!languages.containsKey(defaultLang)) {
+            throw new DefaultLanguageNotFoundException(defaultLang);
+        }
     }
 
     /**
@@ -108,22 +125,30 @@ public class Translator implements ITranslator {
     public String translate(String playerName, String key) {
         String lang = lingvo.getUserLangData().getLanguage(playerName);
         LanguageYAMLFile notListedLang;
+        ILanguageFile langFile = null;
+        
         if(languages.containsKey(lang)) {
             if(languages.get(lang) != null) {
-                return languages.get(lang).getTranslation(key);
+                langFile = languages.get(lang);
             }
         }
         else {
             notListedLang = new LanguageYAMLFile(plugin, lang + ".yml");
             if(notListedLang.getFile().exists()) {
                 languages.put(lang, notListedLang);
-                return notListedLang.getTranslation(key);
+                langFile = notListedLang;
             }
             else {
                 languages.put(lang, null);
             }
         }
+        if(langFile != null) {
+            return langFile.getTranslation(key);
+        }
+        //Tries to use the default language
+        
         return languages.get(defaultLang).getTranslation(key);
+        
     }
 
     /**

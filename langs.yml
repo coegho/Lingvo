@@ -8,8 +8,8 @@ languages:
   galego:
     aliases: [gl, galician]
     path: galego.yml
-  español:
-    aliases: [es, spanish]
+  espanol:
+    aliases: [es, spanish, castellano]
     path: espanol.yml
   esperanto:
     aliases: []

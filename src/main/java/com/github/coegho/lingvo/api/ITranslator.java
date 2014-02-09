@@ -3,6 +3,8 @@
 
 package com.github.coegho.lingvo.api;
 
+import com.github.coegho.lingvo.exceptions.DefaultLanguageNotFoundException;
+
 /**
  *
  * @author coegho
