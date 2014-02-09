@@ -17,6 +17,9 @@ permissions:
     children:
       lingvo.change: true
     default: op
+  lingvo.seelang:
+    description: Allows the use of /lingvo to see the current language.
+    default: true  
   lingvo.change:
     description: Allows the use of /lingvo <lang> to change the language.
     default: true
