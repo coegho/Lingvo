@@ -2,6 +2,7 @@ package com.github.coegho.lingvo.commands;
 
 import com.github.coegho.lingvo.Lingvo;
 import com.github.coegho.lingvo.UserLangData;
+import com.github.coegho.lingvo.events.LanguageChangeEvent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,9 +32,13 @@ public class LingvoCommandExecutor implements CommandExecutor {
             sender.sendMessage(String.format(message, userLangData.getLanguage(sender.getName())));
         }
         else {
-            userLangData.setLanguage(sender.getName(), args[0]);
-            message = plugin.getSelfTranslator().translate(sender.getName(), "messages.lang-changed");
-            sender.sendMessage(String.format(message, args[0]));
+            LanguageChangeEvent evt = new LanguageChangeEvent(sender.getName(), args[0]);
+            plugin.getServer().getPluginManager().callEvent(evt);
+            if(!evt.isCancelled()) {
+                userLangData.setLanguage(sender.getName(), args[0]);
+                message = plugin.getSelfTranslator().translate(sender.getName(), "messages.lang-changed");
+                sender.sendMessage(String.format(message, args[0]));
+            } 
         }
         return true;
     }
