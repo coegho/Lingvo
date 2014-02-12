@@ -1,5 +1,6 @@
 package com.github.coegho.lingvo.config;
 
+import com.github.coegho.lingvo.translator.LanguageLinkNode;
 import com.github.coegho.lingvo.exceptions.LangsFileBadFormatException;
 import com.github.coegho.lingvo.exceptions.LangsFileNotFoundException;
 import java.util.*;

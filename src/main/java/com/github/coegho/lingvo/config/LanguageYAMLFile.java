@@ -1,6 +1,7 @@
 package com.github.coegho.lingvo.config;
 
 import com.github.coegho.lingvo.api.ILanguageFile;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -16,6 +17,7 @@ public class LanguageYAMLFile extends GenericYAMLFile implements ILanguageFile {
      */
     public LanguageYAMLFile(JavaPlugin plugin, String dataFileName) {
         super(plugin, dataFileName);
+        this.reloadData();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.github.coegho.lingvo.config;
+package com.github.coegho.lingvo.translator;
 
 import java.util.List;
 

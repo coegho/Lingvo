@@ -17,6 +17,7 @@ public class GenericYAMLFile {
     protected String dataFileName;
     protected FileConfiguration data;
     protected File dataFile;
+    protected boolean exists;
 
     public GenericYAMLFile(JavaPlugin plugin, String dataFileName) {
         this.plugin = plugin;
@@ -36,6 +37,7 @@ public class GenericYAMLFile {
             YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
             data.setDefaults(defConfig);
         }
+        exists = (defConfigStream != null) || dataFile.exists();
     }
     public final FileConfiguration getData() {
         if (data == null) {
@@ -62,10 +64,7 @@ public class GenericYAMLFile {
          }
     }
     
-    public File getFile() {
-        if (dataFile == null) {
-            dataFile = new File(plugin.getDataFolder(), dataFileName);
-        }
-        return dataFile;
+    public boolean exists() {
+        return exists;
     }
 }
