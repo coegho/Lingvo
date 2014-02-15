@@ -1,6 +1,6 @@
 name: Lingvo
 main: com.github.coegho.lingvo.Lingvo
-version: 0.1
+version: 0.2
 description: Multilanguage API for plugins
 author: coegho
 
